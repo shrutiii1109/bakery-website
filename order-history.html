@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order History</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: white;
+      color: #333;
+    }
+    .order {
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    h2 {
+      color: #e91e63;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #e91e63;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Order History</h1>
+
+  <div id="orders-container">
+    <!-- Orders will show here -->
+  </div>
+
+  <script>
+    const ordersContainer = document.getElementById('orders-container');
+    const orderHistory = JSON.parse(localStorage.getItem('orderHistory')) || [];
+
+    if (orderHistory.length === 0) {
+      ordersContainer.innerHTML = '<p>No past orders found.</p>';
+    } else {
+      orderHistory.forEach((order, idx) => {
+        const div = document.createElement('div');
+        div.className = 'order';
+
+        let itemsHTML = '<table><thead><tr><th>Item</th><th>Price (₹)</th><th>Quantity</th><th>Total (₹)</th></tr></thead><tbody>';
+        order.items.forEach(item => {
+          const total = (item.price * item.quantity).toFixed(2);
+          itemsHTML += `<tr>
+            <td>${item.name}</td>
+            <td>${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>${total}</td>
+          </tr>`;
+        });
+        itemsHTML += '</tbody></table>';
+
+        div.innerHTML = `
+          <h2>Order #${idx + 1} - ${order.date}</h2>
+          ${itemsHTML}
+          <p><strong>Total Paid:</strong> ₹${order.totalAmount}</p>
+          <p><strong>Payment Method:</strong> ${order.paymentMethod.toUpperCase()}</p>
+        `;
+
+        ordersContainer.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
