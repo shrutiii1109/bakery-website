@@ -1,2 +1,2 @@
-# bakery-website.
+bakery-website.
 
